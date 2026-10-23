@@ -1,0 +1,337 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ML-Based IDS — Project Report</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.7;color:#1f2328;background:#fff;padding:40px 16px 60px}
+.page{max-width:760px;margin:0 auto}
+
+/* cover */
+.cover{background:#1a2340;color:#fff;border-radius:10px;padding:40px 36px 32px;margin-bottom:36px}
+.cover .badge{display:inline-block;background:#3b82d4;color:#fff;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:14px}
+.cover h1{font-size:26px;font-weight:700;margin-bottom:6px}
+.cover .sub{font-size:14px;color:#9db4cc;margin-bottom:20px}
+.cover-meta{display:flex;flex-wrap:wrap;gap:24px;margin-top:20px;border-top:1px solid rgba(255,255,255,.12);padding-top:18px}
+.cover-meta .item{font-size:13px}
+.cover-meta .item span{display:block;color:#9db4cc;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+
+/* sections */
+.section{margin-bottom:32px}
+h2{font-size:16px;font-weight:700;border-bottom:2px solid #3b82d4;padding-bottom:6px;margin-bottom:14px}
+h3{font-size:14px;font-weight:600;margin:14px 0 6px}
+p{margin-bottom:10px}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
+th{background:#f0f4f9;font-weight:600;text-align:left;padding:8px 10px;border:1px solid #e5e7eb}
+td{padding:7px 10px;border:1px solid #e5e7eb;vertical-align:top}
+tr:nth-child(even) td{background:#f7f8fa}
+
+/* metric cards */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.metric-card{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:14px 12px;text-align:center}
+.metric-card .val{font-size:22px;font-weight:700;color:#3b82d4}
+.metric-card .lbl{font-size:11px;color:#57606a;margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+
+/* callouts */
+.callout{border-left:4px solid #3b82d4;background:#f0f5fc;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;margin-bottom:14px}
+.callout.warn{border-color:#e67e22;background:#fef5ec}
+.callout.ok{border-color:#27ae60;background:#eafaf1}
+
+/* file tree */
+.file-tree{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:14px 16px;font-family:"Consolas","Courier New",monospace;font-size:12.5px;line-height:1.9;margin-bottom:14px}
+.file-tree .dir{color:#3b82d4;font-weight:600}
+.file-tree .note{color:#57606a}
+
+/* code block */
+.code{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:6px;padding:12px 14px;font-family:"Consolas","Courier New",monospace;font-size:12px;line-height:1.7;margin-bottom:14px;overflow-x:auto;white-space:pre}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tag{background:#eef2fb;color:#3b82d4;border-radius:4px;padding:3px 9px;font-size:12px;font-weight:500}
+
+/* badges */
+.bdos   {background:#fde8e8;color:#c0392b;border-radius:4px;padding:2px 7px;font-size:12px;font-weight:600}
+.bprobe {background:#fef9e7;color:#b7950b;border-radius:4px;padding:2px 7px;font-size:12px;font-weight:600}
+.br2l   {background:#f5eef8;color:#7d3c98;border-radius:4px;padding:2px 7px;font-size:12px;font-weight:600}
+.bu2r   {background:#e8f8f5;color:#1a7a5e;border-radius:4px;padding:2px 7px;font-size:12px;font-weight:600}
+.bnorm  {background:#e9f7ef;color:#1e8449;border-radius:4px;padding:2px 7px;font-size:12px;font-weight:600}
+
+/* arch svg wrapper */
+.arch{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:20px;margin-bottom:14px;overflow-x:auto}
+
+/* progress bars */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.bar-label{width:80px;text-align:right;color:#57606a;font-size:12px}
+.bar-track{flex:1;background:#e5e7eb;border-radius:4px;height:14px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+
+/* footer */
+.footer{margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#57606a}
+</style>
+</head>
+<body>
+<div class="page">
+
+
+<div class="cover">
+  <div class="badge">IBM Internship Project — Cybersecurity Track</div>
+  <h1>🛡️ ML-Based Network Intrusion Detection System</h1>
+  <div class="sub">Real-time traffic classification · Random Forest · Streamlit Dashboard · Single-file Python</div>
+  <div class="cover-meta">
+    <div class="item"><span>Intern</span>Vinay</div>
+    <div class="item"><span>Track</span>Cybersecurity / AI</div>
+    <div class="item"><span>Language</span>Python 3.13</div>
+    <div class="item"><span>Dataset</span>NSL-KDD (125,973 records)</div>
+    <div class="item"><span>Model</span>Random Forest (100 trees)</div>
+    <div class="item"><span>Deliverable</span>Single-file app.py</div>
+  </div>
+</div>
+
+
+<div class="section">
+  <h2>1. Executive Summary</h2>
+  <p>This project delivers a complete, end-to-end <strong>Machine Learning–based Network Intrusion Detection System (IDS)</strong> as a single Python file (<code>app.py</code>). The system captures live network packets using Scapy, extracts 41 NSL-KDD-compatible features per connection, classifies traffic into five categories using a trained Random Forest model, persists alerts to SQLite, and visualises everything in a real-time Streamlit dashboard.</p>
+  <div class="callout ok">
+    <strong>Single-file design:</strong> All six subsystems — preprocessing, training, inference, alert management, live capture, and the dashboard — are self-contained inside one <code>app.py</code> with no internal imports. Running the project requires only <code>pip install -r requirements.txt</code>.
+  </div>
+</div>
+
+
+<div class="section">
+  <h2>2. Model Performance (NSL-KDD Test Set — 22,542 records)</h2>
+  <div class="metrics">
+    <div class="metric-card"><div class="val">75.2%</div><div class="lbl">Accuracy</div></div>
+    <div class="metric-card"><div class="val">71.1%</div><div class="lbl">F1 Weighted</div></div>
+    <div class="metric-card"><div class="val">81.7%</div><div class="lbl">Precision Wtd</div></div>
+    <div class="metric-card"><div class="val">100</div><div class="lbl">RF Trees</div></div>
+  </div>
+
+  <h3>Per-Class Results</h3>
+  <table>
+    <thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1-Score</th><th>Support</th></tr></thead>
+    <tbody>
+      <tr><td><span class="bdos">DoS</span></td><td>96.1%</td><td>76.9%</td><td>85.4%</td><td>7,458</td></tr>
+      <tr><td><span class="bprobe">Probe</span></td><td>87.3%</td><td>67.5%</td><td>76.2%</td><td>2,421</td></tr>
+      <tr><td><span class="br2l">R2L</span></td><td>98.5%</td><td>4.8%</td><td>9.2%</td><td>2,752</td></tr>
+      <tr><td><span class="bu2r">U2R</span></td><td>60.0%</td><td>1.5%</td><td>2.9%</td><td>200</td></tr>
+      <tr><td><span class="bnorm">Normal</span></td><td>64.9%</td><td>97.4%</td><td>77.9%</td><td>9,711</td></tr>
+    </tbody>
+  </table>
+
+  <h3>F1-Score by Class</h3>
+  <div class="bar-row"><span class="bar-label">DoS</span><div class="bar-track"><div class="bar-fill" style="width:85.4%;background:#ff4b4b"></div></div><span style="font-size:12px;color:#57606a">85.4%</span></div>
+  <div class="bar-row"><span class="bar-label">Probe</span><div class="bar-track"><div class="bar-fill" style="width:76.2%;background:#ffd600"></div></div><span style="font-size:12px;color:#57606a">76.2%</span></div>
+  <div class="bar-row"><span class="bar-label">Normal</span><div class="bar-track"><div class="bar-fill" style="width:77.9%;background:#00c853"></div></div><span style="font-size:12px;color:#57606a">77.9%</span></div>
+  <div class="bar-row"><span class="bar-label">R2L</span><div class="bar-track"><div class="bar-fill" style="width:9.2%;background:#e040fb"></div></div><span style="font-size:12px;color:#57606a">9.2%</span></div>
+  <div class="bar-row"><span class="bar-label">U2R</span><div class="bar-track"><div class="bar-fill" style="width:2.9%;background:#40c4ff"></div></div><span style="font-size:12px;color:#57606a">2.9%</span></div>
+
+  <div class="callout warn" style="margin-top:12px">
+    <strong>Class imbalance:</strong> R2L (995 train samples) and U2R (52 train samples) are severely under-represented vs Normal (67,343). This causes very low recall. Recommended fix: apply SMOTE oversampling or set <code>class_weight="balanced"</code> in the RandomForestClassifier.
+  </div>
+</div>
+
+
+<div class="section">
+  <h2>3. System Architecture</h2>
+  <div class="arch">
+    <svg width="680" height="200" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,Segoe UI,sans-serif" font-size="12">
+      <rect x="10" y="80" width="110" height="40" rx="6" fill="#e8f0fe" stroke="#3b82d4" stroke-width="1.5"></rect>
+      <text x="65" y="96" text-anchor="middle" fill="#1a2340" font-weight="600">Live Traffic</text>
+      <text x="65" y="112" text-anchor="middle" fill="#57606a" font-size="10">Scapy Capture</text>
+
+      <rect x="150" y="80" width="110" height="40" rx="6" fill="#e8f0fe" stroke="#3b82d4" stroke-width="1.5"></rect>
+      <text x="205" y="96" text-anchor="middle" fill="#1a2340" font-weight="600">Feature</text>
+      <text x="205" y="112" text-anchor="middle" fill="#57606a" font-size="10">Extraction (41)</text>
+
+      <rect x="290" y="80" width="110" height="40" rx="6" fill="#e8f0fe" stroke="#3b82d4" stroke-width="1.5"></rect>
+      <text x="345" y="96" text-anchor="middle" fill="#1a2340" font-weight="600">Random Forest</text>
+      <text x="345" y="112" text-anchor="middle" fill="#57606a" font-size="10">Classifier</text>
+
+      <rect x="430" y="40" width="110" height="40" rx="6" fill="#eafaf1" stroke="#27ae60" stroke-width="1.5"></rect>
+      <text x="485" y="56" text-anchor="middle" fill="#1a2340" font-weight="600">Normal</text>
+      <text x="485" y="72" text-anchor="middle" fill="#57606a" font-size="10">Allowed</text>
+
+      <rect x="430" y="120" width="110" height="40" rx="6" fill="#fde8e8" stroke="#c0392b" stroke-width="1.5"></rect>
+      <text x="485" y="136" text-anchor="middle" fill="#1a2340" font-weight="600">Attack 🚨</text>
+      <text x="485" y="152" text-anchor="middle" fill="#57606a" font-size="10">DoS/Probe/R2L/U2R</text>
+
+      <rect x="570" y="120" width="100" height="40" rx="6" fill="#fff3e0" stroke="#e67e22" stroke-width="1.5"></rect>
+      <text x="620" y="136" text-anchor="middle" fill="#1a2340" font-weight="600">Alert</text>
+      <text x="620" y="152" text-anchor="middle" fill="#57606a" font-size="10">SQLite + Dashboard</text>
+
+      <line x1="120" y1="100" x2="148" y2="100" stroke="#3b82d4" stroke-width="1.5" marker-end="url(#a1)"></line>
+      <line x1="260" y1="100" x2="288" y2="100" stroke="#3b82d4" stroke-width="1.5" marker-end="url(#a1)"></line>
+      <line x1="400" y1="95" x2="428" y2="68" stroke="#27ae60" stroke-width="1.5" marker-end="url(#a2)"></line>
+      <line x1="400" y1="105" x2="428" y2="132" stroke="#c0392b" stroke-width="1.5" marker-end="url(#a3)"></line>
+      <line x1="540" y1="140" x2="568" y2="140" stroke="#e67e22" stroke-width="1.5" marker-end="url(#a4)"></line>
+
+      <rect x="140" y="150" width="160" height="28" rx="4" fill="#f7f8fa" stroke="#e5e7eb"></rect>
+      <text x="220" y="162" text-anchor="middle" fill="#57606a" font-size="11">NSL-KDD Training Data</text>
+      <text x="220" y="174" text-anchor="middle" fill="#57606a" font-size="10">125,973 records · 41 features</text>
+      <line x1="220" y1="150" x2="330" y2="122" stroke="#aaa" stroke-width="1"></line>
+
+      <defs>
+        <marker id="a1"><path d="M0,0L0,6L8,3z" fill="#3b82d4"></path></marker>
+        <marker id="a2"><path d="M0,0L0,6L8,3z" fill="#27ae60"></path></marker>
+        <marker id="a3"><path d="M0,0L0,6L8,3z" fill="#c0392b"></path></marker>
+        <marker id="a4"><path d="M0,0L0,6L8,3z" fill="#e67e22"></path></marker>
+      </defs>
+    </svg>
+  </div>
+</div>
+
+
+<div class="section">
+  <h2>4. Project Structure</h2>
+  <div class="file-tree">
+<span class="dir">ibm project/</span>
+  <span class="dir">app.py</span>               <span class="note">← Entire project in one file (904 lines)</span>
+  <span class="dir">requirements.txt</span>     <span class="note">← 18 Python dependencies</span>
+  <span class="dir">README.md</span>            <span class="note">← Documentation</span>
+  <span class="dir">data/</span>
+    <span class="dir">raw/</span>               <span class="note">← KDDTrain+.txt (19 MB) · KDDTest+.txt (3.4 MB)</span>
+    <span class="dir">processed/</span>         <span class="note">← train_multiclass.csv · test_multiclass.csv</span>
+    <span class="dir">alerts.db</span>          <span class="note">← SQLite alert store</span>
+  <span class="dir">models/</span>
+    <span class="dir">ids_model_multiclass.pkl</span>  <span class="note">← Trained Random Forest</span>
+    <span class="dir">encoders.pkl · scaler.pkl · feature_cols.pkl</span>
+    <span class="dir">metrics.json</span>       <span class="note">← Accuracy, F1, per-class report</span>
+    <span class="dir">confusion_matrix.png · feature_importance.png</span>
+  </div>
+</div>
+
+
+<div class="section">
+  <h2>5. Code Modules (inside app.py)</h2>
+  <table>
+    <thead><tr><th>Section</th><th>Key Functions / Classes</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>§1 Features</strong></td><td>load_dataset(), map_labels(), encode_categoricals(), scale_features(), preprocess()</td><td>Loads NSL-KDD raw text, maps 40+ attack subtypes to 5 categories, label-encodes categorical columns, standard-scales numeric features</td></tr>
+      <tr><td><strong>§2 Train</strong></td><td>load_processed(), train_model(), evaluate_model(), run_training()</td><td>Trains RandomForestClassifier (100 trees), saves metrics.json, confusion matrix PNG, feature importance PNG</td></tr>
+      <tr><td><strong>§3 Predict</strong></td><td>PredictionResult, IDSPredictor</td><td>Loads trained model; provides predict_one(), predict_batch(), predict_csv() with automatic encoding &amp; scaling</td></tr>
+      <tr><td><strong>§4 Alerts</strong></td><td>Alert, AlertManager</td><td>Thread-safe alert store; SQLite persistence; severity mapping (DoS=HIGH, U2R=CRITICAL)</td></tr>
+      <tr><td><strong>§5 Capture</strong></td><td>ConnectionTracker, extract_features(), LiveCapture</td><td>Scapy packet sniffer; extracts 41 NSL-KDD features per packet; 2-second sliding-window traffic stats</td></tr>
+      <tr><td><strong>§6 Dashboard</strong></td><td>_run_dashboard()</td><td>Streamlit UI: KPI cards, donut/area/bar charts, colour-coded alerts table, model metrics, top attacking IPs, auto-refresh</td></tr>
+      <tr><td><strong>§7 Entry Point</strong></td><td>_is_streamlit()</td><td>Auto-detects Streamlit runtime vs CLI; routes to dashboard or argparse handler</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="section">
+  <h2>6. Dataset — NSL-KDD</h2>
+  <p>The <strong>NSL-KDD dataset</strong> is the standard benchmark for IDS research, derived from the KDD Cup 1999 dataset with redundant records removed.</p>
+  <table>
+    <thead><tr><th>Split</th><th>Records</th><th>File</th><th>Size</th></tr></thead>
+    <tbody>
+      <tr><td>Training</td><td>125,973</td><td>KDDTrain+.txt</td><td>19.1 MB</td></tr>
+      <tr><td>Test</td><td>22,542</td><td>KDDTest+.txt</td><td>3.4 MB</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead><tr><th>Category</th><th>Train Samples</th><th>% of Train</th><th>Example Attacks</th></tr></thead>
+    <tbody>
+      <tr><td><span class="bnorm">Normal</span></td><td>67,343</td><td>53.5%</td><td>Legitimate traffic</td></tr>
+      <tr><td><span class="bdos">DoS</span></td><td>45,927</td><td>36.5%</td><td>Neptune, Smurf, Back, Teardrop, Pod</td></tr>
+      <tr><td><span class="bprobe">Probe</span></td><td>11,656</td><td>9.3%</td><td>Portsweep, Nmap, Ipsweep, Satan</td></tr>
+      <tr><td><span class="br2l">R2L</span></td><td>995</td><td>0.8%</td><td>Guess_passwd, FTP_write, IMAP</td></tr>
+      <tr><td><span class="bu2r">U2R</span></td><td>52</td><td>0.04%</td><td>Buffer overflow, Rootkit, Perl</td></tr>
+    </tbody>
+  </table>
+  <p>Each record has <strong>41 features</strong>: 9 basic (protocol, bytes, flags), 13 content-based (login attempts, shells), 9 time-based traffic stats, 10 host-based traffic stats.</p>
+</div>
+
+
+<div class="section">
+  <h2>7. How to Run</h2>
+  <table>
+    <thead><tr><th>Step</th><th>Command</th></tr></thead>
+    <tbody>
+      <tr><td>Install dependencies</td><td><code>pip install -r requirements.txt</code></td></tr>
+      <tr><td>Download dataset (auto)</td><td><code>python app.py</code> — then follow prompt, or run the urllib one-liner from README</td></tr>
+      <tr><td>Preprocess</td><td><code>python app.py --preprocess</code></td></tr>
+      <tr><td>Train model</td><td><code>python app.py --train</code></td></tr>
+      <tr><td>Train (binary)</td><td><code>python app.py --train --binary</code></td></tr>
+      <tr><td>Train + cross-validation</td><td><code>python app.py --train --cross-val</code></td></tr>
+      <tr><td>Launch dashboard</td><td><code>python -m streamlit run app.py</code></td></tr>
+      <tr><td>Live capture (Admin)</td><td><code>python app.py --capture --iface "Wi-Fi"</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="section">
+  <h2>8. Dashboard Features</h2>
+  <table>
+    <thead><tr><th>Panel</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>KPI Cards (×4)</td><td>Total connections · Attacks detected (% of traffic) · Critical alerts · Normal traffic — updated every 10 s</td></tr>
+      <tr><td>Attack Distribution</td><td>Plotly donut chart — proportions of each attack category</td></tr>
+      <tr><td>Attack Timeline</td><td>Plotly area chart — attack count resampled to 10-minute bins</td></tr>
+      <tr><td>Severity Breakdown</td><td>Plotly bar chart — CRITICAL / HIGH / MEDIUM / LOW with distinct colours</td></tr>
+      <tr><td>Recent Alerts Table</td><td>20 most recent attacks; rows colour-coded red/orange/yellow by severity</td></tr>
+      <tr><td>Model Performance</td><td>Accuracy &amp; F1 metrics + per-class classification report DataFrame</td></tr>
+      <tr><td>Confusion Matrix</td><td>Heatmap image generated by train step</td></tr>
+      <tr><td>Feature Importance</td><td>Top-20 feature importance bar chart image</td></tr>
+      <tr><td>Top Attacking IPs</td><td>Horizontal bar chart of top 10 source IPs by attack count</td></tr>
+      <tr><td>Demo / Live Mode</td><td>Sidebar toggle — runs on 50 simulated records without needing live capture</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="section">
+  <h2>9. Technology Stack</h2>
+  <div class="tags">
+    <span class="tag">Python 3.13</span>
+    <span class="tag">scikit-learn 1.7</span>
+    <span class="tag">pandas 2.3</span>
+    <span class="tag">numpy 2.3</span>
+    <span class="tag">Streamlit 1.52</span>
+    <span class="tag">Plotly 7.1</span>
+    <span class="tag">Scapy 2.8</span>
+    <span class="tag">SQLite 3</span>
+    <span class="tag">matplotlib 3.10</span>
+    <span class="tag">seaborn 0.13</span>
+    <span class="tag">joblib 1.5</span>
+    <span class="tag">Flask 3.1</span>
+  </div>
+</div>
+
+
+<div class="section">
+  <h2>10. Future Improvements</h2>
+  <table>
+    <thead><tr><th>Area</th><th>Improvement</th><th>Expected Impact</th></tr></thead>
+    <tbody>
+      <tr><td>Class Imbalance</td><td>Apply SMOTE or <code>class_weight="balanced"</code></td><td>R2L/U2R recall from &lt;5% to &gt;60%</td></tr>
+      <tr><td>Model</td><td>Evaluate XGBoost, LightGBM, or LSTM</td><td>Higher overall accuracy</td></tr>
+      <tr><td>Features</td><td>Bidirectional flow (dst_bytes currently 0)</td><td>More realistic live inference</td></tr>
+      <tr><td>Dataset</td><td>CICIDS-2017 / CIC-IDS-2018 for modern attacks</td><td>Covers ransomware, botnets, web attacks</td></tr>
+      <tr><td>Alerting</td><td>Email / webhook on CRITICAL alerts</td><td>Operational SOC integration</td></tr>
+      <tr><td>Deployment</td><td>IBM Cloud Code Engine + Docker + REST API</td><td>Production-ready SaaS</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="section">
+  <h2>11. Deliverables</h2>
+  <table>
+    <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong>app.py</strong></td><td>Complete project — all 7 modules in ~900 lines of Python</td></tr>
+      <tr><td><strong>requirements.txt</strong></td><td>18 pip-installable dependencies, Python 3.13 compatible</td></tr>
+      <tr><td><strong>README.md</strong></td><td>Setup guide, CLI reference, performance tables, architecture</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">Made with IBM Bob</div>
+</div>
+</body>
+</html>
